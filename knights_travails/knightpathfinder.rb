@@ -50,6 +50,6 @@ class KnightPathFinder
         queue << mp
       end
     end
-    res
+    res.map{|move| PolyTreeNode.new(move)}
   end
 end
