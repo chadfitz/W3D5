@@ -40,18 +40,18 @@ class PolyTreeNode
         child_node.parent = nil
     end
 
+    def dfs(target_value)
+        return self if self.value == target_value
+        return nil if self.children.empty?
+        result = nil
+        self.children.each do |node|
+            result ||= node.dfs(target_value)
+        end
+        result
+    end
+
     def inspect
-        { 'value' => @value, 'parent_value' => @parent.value }.inspect
-        # { 'value' => @value }.inspect
+        # { 'value' => @value, 'parent_value' => @parent.value }.inspect
+        { 'value' => @value }.inspect
     end
 end
-
-
-# parent node p1, p2
-# child node c (current)
-
-# case 1: c.parent = nil
-    # subcase 1: node given is nil
-    # subcase 2: node given is not nil
-
-# case 2: c.parent is not nil
