@@ -50,6 +50,17 @@ class PolyTreeNode
         result
     end
 
+    def bfs(target_value)
+        arr = []
+        arr.unshift(self)
+        until arr.empty?
+            node = arr.pop
+            return node if node.value == target_value
+            node.children.each {|child| arr.unshift(child)}
+        end
+        nil
+    end
+
     def inspect
         # { 'value' => @value, 'parent_value' => @parent.value }.inspect
         { 'value' => @value }.inspect
