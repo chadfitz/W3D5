@@ -34,7 +34,9 @@ class KnightPathFinder
   def new_move_positions(pos)
     all_possible_pos = KnightPathFinder.valid_moves(pos)
     # all_possible_pos.reject { |old_pos| considered_positions.include?(old_pos) }
-    all_possible_pos.select { |pp| !considered_positions.include?(pp) }
+    new_moves = all_possible_pos.select { |pp| !considered_positions.include?(pp) }
+    considered_positions.concat(new_moves)
+    new_moves
   end
 
   def build_move_tree
@@ -43,7 +45,7 @@ class KnightPathFinder
     until arr.empty?
       debugger
       current_node = arr.shift
-      considered_positions << current_node
+      # considered_positions << current_node
       new_move_positions(current_node).each do |mp|
         arr << mp
       end
