@@ -8,7 +8,7 @@ class KnightPathFinder
 
   def self.valid_moves(pos)
     arr = []
-    row, col = pos.value
+    row, col = pos
     arr << [row+2, col+1]
     arr << [row+2, col-1]
     arr << [row+1, col-2]
@@ -19,47 +19,37 @@ class KnightPathFinder
     arr << [row-1, col-2]
 
     moves = arr.select {|r,c| r <=7 && r >= 0 && c >= 0 && c <= 7}
-    moves.map {|r,c| PolyTreeNode.new([r,c])}
   end
 
   attr_accessor :considered_positions
-  attr_reader :position
+  attr_reader :pos_node
 
   def initialize(pos)
-    @position = KnightPathFinder.root_node(pos)
-    @considered_positions = [@position]
-    # self.build_move_tree(self.root_node)
+    @pos_node = KnightPathFinder.root_node(pos)
+    @considered_positions = [pos]
   end
 
   def new_move_positions(pos)
     all_possible_pos = KnightPathFinder.valid_moves(pos)
     # all_possible_pos.reject { |old_pos| considered_positions.include?(old_pos) }
-    new_moves = all_possible_pos.select { |pp| !considered_positions.include?(pp) }
+    new_moves = all_possible_pos.select { |possible_move| !considered_positions.include?(possible_move) }
     considered_positions.concat(new_moves)
     new_moves
   end
 
   def build_move_tree
-    arr = []
-    arr << self.position
-    until arr.empty?
-      debugger
-      current_node = arr.shift
-      # considered_positions << current_node
-      new_move_positions(current_node).each do |mp|
-        arr << mp
+    queue = []
+    res = []
+    queue << self.pos_node.value
+    until queue.empty?
+      # debugger
+      current_pos = queue.shift
+      all_new_moves = new_move_positions(current_pos)
+      res += all_new_moves
+      all_new_moves.each do |mp|
+        queue << mp
       end
     end
-    arr
+    res
   end
 end
-    # def bfs(target_value)
-    #     arr = []
-    #     arr.unshift(self)
-    #     until arr.empty?
-    #         node = arr.pop
-    #         return node if node.value == target_value
-    #         node.children.each {|child| arr.unshift(child)}
-    #     end
-    #     nil
-    # end
