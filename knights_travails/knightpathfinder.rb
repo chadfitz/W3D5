@@ -1,5 +1,6 @@
 require_relative "../skeleton/lib/00_tree_node"
 require "byebug"
+
 class KnightPathFinder
 
   def self.root_node(pos)
@@ -22,16 +23,16 @@ class KnightPathFinder
   end
 
   attr_accessor :considered_positions
-  attr_reader :pos_node
+  attr_reader :pos_node, :start_pos
 
-  def initialize(pos)
-    @pos_node = KnightPathFinder.root_node(pos)
-    @considered_positions = [pos]
+  def initialize(start_pos)
+    @start_pos = start_pos
+    @pos_node = KnightPathFinder.root_node(start_pos)
+    @considered_positions = [start_pos]
   end
 
   def new_move_positions(pos)
     all_possible_pos = KnightPathFinder.valid_moves(pos)
-    # all_possible_pos.reject { |old_pos| considered_positions.include?(old_pos) }
     new_moves = all_possible_pos.select { |possible_move| !considered_positions.include?(possible_move) }
     considered_positions.concat(new_moves)
     new_moves
@@ -39,17 +40,30 @@ class KnightPathFinder
 
   def build_move_tree
     queue = []
-    res = []
-    queue << self.pos_node.value
+    queue << self.pos_node
     until queue.empty?
       # debugger
-      current_pos = queue.shift
-      all_new_moves = new_move_positions(current_pos)
-      res += all_new_moves
+      current_pos_node = queue.shift
+      all_new_moves = new_move_positions(current_pos_node.value)
       all_new_moves.each do |mp|
-        queue << mp
+        p_node = PolyTreeNode.new(mp)
+        current_pos_node.add_child(p_node)
+        queue << p_node
       end
     end
-    res.map{|move| PolyTreeNode.new(move)}
+  end
+
+  def find_path(end_pos) 
+    end_node = self.pos_node.bfs(end_pos)
+    trace_path_back(end_node)
+  end
+
+  def trace_path_back(node)
+    res = [node.value]
+    until node.parent.nil?
+      res.unshift(node.parent.value)
+      node = node.parent
+    end
+    res
   end
 end

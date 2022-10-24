@@ -7,10 +7,6 @@ class PolyTreeNode
         @children = Array.new
     end
 
-    def ==(node)
-        self.value == node.value
-    end
-
     def parent=(node)
         if @parent == nil
             if node == nil
